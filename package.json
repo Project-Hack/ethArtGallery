@@ -1,0 +1,39 @@
+{
+  "name": "nftmarketplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "@thirdweb-dev/react": "^4.4.9",
+    "@thirdweb-dev/sdk": "^4.0.36",
+    "antd": "^5.14.1",
+    "axios": "0.26.0",
+    "dotenv": "^16.0.3",
+    "ethers": "^5",
+    "form-data": "^4.0.0",
+    "next": "12.1.0",
+    "next-themes": "0.1.1",
+    "react": "17.0.2",
+    "react-avatar-editor": "^13.0.2",
+    "react-dom": "17.0.2",
+    "react-hot-toast": "^2.4.1",
+    "tailwindcss": "3.0.23",
+    "web3modal": "1.9.5"
+  },
+  "devDependencies": {
+    "@chainlink/contracts": "^0.2.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "4.5.0",
+    "autoprefixer": "10.4.2",
+    "chai": "^4.3.7",
+    "eslint": "^8.56.0",
+    "hardhat": "^2.12.4"
+  }
+}
