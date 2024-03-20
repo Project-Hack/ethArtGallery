@@ -214,7 +214,210 @@ export const NFTProvider = ({ children }) => {
   //   }
   // };
 
-  
+  const userOf = async (id) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const user = await contract.getUserOf(id);
+    return user;
+  };
+
+  const createSale = async (
+    url,
+    isWETH,
+    forminputPrice,
+    forminputRentPrice,
+    forSale,
+    forRent
+  ) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const priceInWei = ethers.utils.parseUnits(forminputPrice, "ether");
+    const rentPriceInWei = ethers.utils.parseUnits(forminputRentPrice, "ether");
+
+    const listingPrice = ethers.utils.parseUnits("0.01", "ether");
+    const transaction = await contract.createToken(
+      url,
+      isWETH,
+      priceInWei,
+      rentPriceInWei,
+      forSale,
+      forRent,
+      { value: listingPrice.toString() }
+    );
+    setIsLoadingNFT(true);
+    await transaction.wait();
+    setIsLoadingNFT(false);
+  };
+
+  const reSale = async (
+    tokenId,
+    isWETH,
+    forminputPrice,
+    forminputRentPrice,
+    forRent,
+    forSale
+  ) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const priceInWei = ethers.utils.parseUnits(forminputPrice, "ether");
+    const rentPriceInWei = ethers.utils.parseUnits(forminputRentPrice, "ether");
+
+    const listingPrice = ethers.utils.parseUnits("0.01", "ether");
+    const transaction = await contract.resellToken(
+      tokenId,
+      isWETH,
+      priceInWei,
+      rentPriceInWei,
+      forRent,
+      forSale,
+      { value: listingPrice.toString() }
+    );
+    setIsLoadingNFT(true);
+    await transaction.wait();
+    setIsLoadingNFT(false);
+  };
+
+  // const buyNft = async (nft) => {
+  //   const web3Modal = new Web3Modal();
+  //   const connection = await web3Modal.connect();
+  //   const provider = new ethers.providers.Web3Provider(connection);
+  //   const signer = provider.getSigner();
+  //   const contract = new ethers.Contract(
+  //     MarketAddress,
+  //     MarketAddressABI,
+  //     signer
+  //   );
+
+  //   const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+
+  //   const transaction = await contract.createMarketSale(nft.tokenId, {
+  //     value: price,
+  //   });
+  //   setIsLoadingNFT(true);
+  //   await transaction.wait();
+  //   setIsLoadingNFT(false);
+  // };
+
+  const buyNft = async (nft) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      MarketAddress,
+      MarketAddressABI,
+      signer
+    );
+    let transaction;
+    const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+    if (nft.isWETH === 'true' || nft.isWETH === true) {
+      const wethContract = new ethers.Contract(
+        WETHAddress,
+        WETHAddressABI,
+        signer
+      );
+
+      const approvalTx = await wethContract.approve(MarketAddress, price);
+      await approvalTx.wait();
+      transaction = await contract.createMarketSale(nft.tokenId);
+    } else {
+      transaction = await contract.createMarketSale(nft.tokenId, {
+        value: price,
+      });
+    }
+
+    setIsLoadingNFT(true);
+    await transaction.wait();
+    setIsLoadingNFT(false);
+  };
+
+  // const rentNFT = async (nft, rentalPeriodInDays) => {
+  //   const web3Modal = new Web3Modal();
+  //   const connection = await web3Modal.connect();
+  //   const provider = new ethers.providers.Web3Provider(connection);
+  //   const signer = provider.getSigner();
+  //   const contract = new ethers.Contract(
+  //     MarketAddress,
+  //     MarketAddressABI,
+  //     signer
+  //   );
+
+  //   const totalRentPrice = nft.rentPrice * rentalPeriodInDays;
+  //   const rentPrice = ethers.utils.parseUnits(
+  //     totalRentPrice.toString(),
+  //     "ether"
+  //   );
+  //   // const expiry = Math.floor(Date.now() / 1000) + rentalPeriodInDays * 24 * 60 * 60;
+  //   //for 2 minute
+  //   const expiry = Math.floor(Date.now() / 1000) + 120;
+
+  //   const transaction = await contract.rentOutToken(nft.tokenId, expiry, {
+  //     value: rentPrice,
+  //   });
+
+  //   await transaction.wait();
+  //   console.log(
+  //     `NFT with tokenId ${nft.tokenId} rented successfully! to ${signer.address}`
+  //   );
+  // };
+
+  const rentNFT = async (nft, rentalPeriodInDays) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      MarketAddress,
+      MarketAddressABI,
+      signer
+    );
+
+    const totalRentPrice = nft.rentPrice * rentalPeriodInDays;
+    const rentPrice = ethers.utils.parseUnits(
+      totalRentPrice.toString(),
+      "ether"
+    );
+
+    // const expiry = Math.floor(Date.now() / 1000) + rentalPeriodInDays * 24 * 60 * 60;
+    //for 2 minute
+    const expiry = Math.floor(Date.now() / 1000) + 120;
+    let transaction;
+
+    if (nft.isWETH === 'true' || nft.isWETH === true) {
+      const wethContract = new ethers.Contract(
+        WETHAddress,
+        WETHAddressABI,
+        signer
+      );
+
+      const approvalTx = await wethContract.approve(MarketAddress, rentPrice);
+      await approvalTx.wait();
+      transaction = await contract.rentOutToken(nft.tokenId, expiry);
+
+    } else {
+      transaction = await contract.rentOutToken(nft.tokenId, expiry, {
+        value: rentPrice,
+      });
+    }
+
+    setIsLoadingNFT(true);
+    await transaction.wait();
+    setIsLoadingNFT(false);
+  };
+
+
   const fetchNFTs = async () => {
     console.log("Fetching assets...");
     setIsLoadingNFT(false);
