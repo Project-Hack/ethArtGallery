@@ -78,18 +78,18 @@ const ResellNFT = () => {
               Choose Currency
             </h3>
             <div className="flex space-x-4 ml-5">
-              {/* MATIC Radio Button */}
+              {/* ETH Radio Button */}
               <label className="flex items-center space-x-2">
                 <input
                   type="radio"
-                  value="MATIC"
+                  value="ETH"
                   name="currency"
                   checked={!isWETH}
                   onChange={() => setIsWETH(false)}
                   className="w-4 h-4 text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  MATIC
+                  ETH
                 </span>
               </label>
 

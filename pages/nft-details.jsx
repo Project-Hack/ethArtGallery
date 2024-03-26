@@ -110,7 +110,7 @@ const RentBobyCmp = ({ nft, nftCurrency, rentalPeriod, setRentalPeriod }) => (
 const NFTDetails = () => {
   const { isLoadingNFT, buyNft, rentNFT, userOf } =
     useContext(NFTContext);
-  const [currency, setCurrency] = useState("MATIC");
+  const [currency, setCurrency] = useState("ETH");
   const currentAccount = useConnectionStatus() === 'connected' ? useAddress().toLowerCase() : "";
 
   const [nft, setNft] = useState({

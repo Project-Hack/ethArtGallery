@@ -18,7 +18,7 @@ export const NFTProvider = ({ children }) => {
   // const [currentAccount, setCurrentAccount] = useState("");
   const [avatar, setAvatar] = useState("");
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
-  // const nftCurrency = "MATIC";
+  // const nftCurrency = "ETH";
   const disconnect = useDisconnect();
   const address = useAddress();
   const connectionStatus = useConnectionStatus();
@@ -37,7 +37,7 @@ export const NFTProvider = ({ children }) => {
       return "WETH";
     }
     else
-      return "MATIC";
+      return "ETH";
   }
 
   const userOf = async (id) => {

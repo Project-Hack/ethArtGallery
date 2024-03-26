@@ -189,7 +189,7 @@ contract RentableNFTMarketplace is
         if(item.isWETH) {
             require(IWETH(WETH_ADDRESS).transferFrom(msg.sender, item.owner, price), "Failed to transfer WETH");
         } else {
-            require(msg.value == price, "Please pay the asking price in MATIC to complete the purchase");
+            require(msg.value == price, "Please pay the asking price in ETH to complete the purchase");
             payable(item.owner).transfer(msg.value);
         }
 
@@ -227,7 +227,7 @@ contract RentableNFTMarketplace is
         if(item.isWETH) {
             require(IWETH(WETH_ADDRESS).transferFrom(msg.sender, item.owner, item.rentPrice), "Failed to transfer WETH for rent");
         } else {
-            require(msg.value >= item.rentPrice, "Insufficient funds to rent the token in MATIC");
+            require(msg.value >= item.rentPrice, "Insufficient funds to rent the token in ETH");
             payable(item.owner).transfer(msg.value);
         }
 

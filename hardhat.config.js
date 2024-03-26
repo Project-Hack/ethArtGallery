@@ -1,8 +1,6 @@
 require('@nomiclabs/hardhat-waffle');
 require('dotenv').config({ path: '.env' });
 
-const { NEXT_PUBLIC_API_URL, PRIVATE_KEY } = process.env;
-
 module.exports = {
   solidity: {
     version: "0.8.9",
@@ -20,8 +18,8 @@ module.exports = {
       chainId: 1337,
     },
     sepolia: {
-      url: NEXT_PUBLIC_API_URL,
-      accounts: [PRIVATE_KEY],
+      url: process.env.API_KEY,
+      accounts: [process.env.PRIVATE_KEY],
       chainId: 11155111,
     },
   },

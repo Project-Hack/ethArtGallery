@@ -304,7 +304,7 @@ const Game = () => {
                                     <input
                                       id="currency-radio-matic"
                                       type="radio"
-                                      value="MATIC"
+                                      value="ETH"
                                       name="currency"
                                       checked={!isWETH}
                                       onChange={() => setIsWETH(false)}
@@ -314,7 +314,7 @@ const Game = () => {
                                       htmlFor="currency-radio-matic"
                                       className="ml-2 py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
                                     >
-                                      MATIC
+                                      ETH
                                     </label>
                                   </div>
                                   <div className="flex items-center w-1/2">
