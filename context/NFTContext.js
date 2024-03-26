@@ -29,7 +29,8 @@ export const NFTProvider = ({ children }) => {
   const [wrongOTP, setWrongOTP] = useState(false);
 
   const disconnect = useDisconnect();
-  const currentAddress = useConnectionStatus() === "connected" ? useAddress() : "";
+  const address = useAddress();
+  const connectionStatus = useConnectionStatus();
 
   useEffect(() => {
     const userdata = window.localStorage.getItem("userdata");
@@ -478,30 +479,47 @@ export const NFTProvider = ({ children }) => {
   };
 
   const fetchMyNFTs = async () => {
-    console.log(currentAddress, 'this is cuurentaddress')
-    try {
-      const response = await axios.get(
-        `https://testnets-api.opensea.io/api/v2/chain/mumbai/account/${currentAddress}/nfts`
-      );
-      console.log(response.data.nfts);
-  
-      
-      const items = await Promise.all(
-        response.data.nfts.map(async (nft) => {
-  
-          const tokenId = parseInt(nft.identifier);
-          const owner = currentAddress; // This might be different based on your implementation
-          const tokenURI = nft.metadata_url;
-          const isWETH = false;
-          const price = "0";
-          const rentPrice = "0";
-          const forRent = false;
-          const forSale = false;
-          const sold = false;
-          const rented = false;
+    setIsLoadingNFT(false);
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const data = await contract.fetchMyNFTs();
+    var i = 0;
+    console.log(data.length);
+    const items = await Promise.all(
+      data.map(
+        async ({
+          tokenId,
+          owner,
+          isWETH,
+          price: unformmattedPrice,
+          rentPrice: unformmattedRentPrice,
+          forRent,
+          forSale,
+          sold,
+          rented,
+        }) => {
+          console.log(tokenId);
+          const tokenURI = await contract.tokenURI(tokenId);
+
+          console.log(tokenURI, i++, tokenId._hex);
+          const {
+            data: { name, id, description },
+          } = await axios.get(`https://ipfs.io/ipfs/${tokenURI}`);
+          const price = ethers.utils.formatUnits(
+            unformmattedPrice.toString(),
+            "ether"
+          );
+          const rentPrice = ethers.utils.formatUnits(
+            unformmattedRentPrice.toString(),
+            "ether"
+          );
 
           return {
-            tokenId,
+            tokenId: tokenId.toNumber(),
             owner,
             isWETH,
             price,
@@ -510,18 +528,16 @@ export const NFTProvider = ({ children }) => {
             forSale,
             sold,
             rented,
-            name: nft.name,
-            id: tokenId, // Assuming the id is the same as tokenId
-            description: nft.description,
+            name,
+            id,
+            description,
             tokenURI,
           };
-        })
-      );
-  
-      return items;
-    } catch (error) {
-      console.error("Error during fetching NFTs:", error);
-    }
+        }
+      )
+    );
+
+    return items;
   };
 
   const fetchMyRentedNFT = async () => {

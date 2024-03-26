@@ -151,7 +151,7 @@ const ButtonGroup = ({ setActive, router, setIsOpen }) => {
         <div className="flex flex-row">
           {currentAccount ? (
             <Button
-              btnName="Mint assets"
+              btnName="Create"
               classStyles="mx-2 mt-1 h-10 rounded-xl"
               handleClick={() => {
                 setActive("");
