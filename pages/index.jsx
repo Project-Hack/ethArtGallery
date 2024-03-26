@@ -117,18 +117,6 @@ const Home = () => {
         setSaleNfts(itemsForSale);
         setIsLoading(false);
       })};
-      if (status === "connected") {
-        try {
-          const vendorId = window.localStorage.getItem("vendor");
-          const lowerCaseAddress = currentAccount.toLowerCase();
-          await axios.post(`${API_BASE_URL}/api/address`, {
-            vendorId,
-            address: lowerCaseAddress,
-          });
-        } catch (error) {
-          console.error("Error sending address:", error);
-        }
-      }
   }, [currentAccount ? currentAccount : ""]);
 
   const handleScroll = (direction) => {

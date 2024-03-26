@@ -165,45 +165,12 @@ const NFTDetails = () => {
     }
   }, [nft, nft.tokenId, userOf]);
 
-  const fetchNftOwnerDetails = async (address) =>{
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/address/vendorinfo/${address}`);
-      return res.data;
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
-  }
-
-  useEffect(() => {
-    if (nft.owner) {
-      fetchNftOwnerDetails(nft.owner.toLowerCase()).then((res) => {
-        console.log(res);
-        if(res && res.avatarurl){
-          setNft({...nft, avatar: res.avatarurl})
-        }
-      });
-    }
-  }, [nft.owner])
 
   const buyCheckout = async () => {
     try {
       await buyNft(nft);
-      await axios.put(`${API_BASE_URL}/api/assets/${nft.id}`, {
-        sold: true,
-        isForSale: false,
-        isForRent: false,
-        isWETH: false,
-        price: null,
-        rentPrice: null,
-        owner: window.localStorage.getItem("vendor"),
-      });
-      const asset = await axios.get(`${API_BASE_URL}/api/assets/${nft.id}`);
-      const vendorId = window.localStorage.getItem("vendor");
-      await axios.post(`${API_BASE_URL}/api/transaction`, {
-        assetId: asset.data._id,
-        vendorId,
-        transactionType: "Buy",
-      });
+      
+      
       setPaymentModal(false);
       setBuySuccessModal(true);
     } catch (error) {
@@ -214,20 +181,7 @@ const NFTDetails = () => {
   const rentCheckout = async (rentalPeriodInDays) => {
     try {
       await rentNFT(nft, rentalPeriodInDays);
-      await axios.put(`${API_BASE_URL}/api/assets/${nft.id}`, {
-        rented: true,
-        rentStart: Math.floor(Date.now() / 1000),
-        rentEnd:
-          Math.floor(Date.now() / 1000) + rentalPeriodInDays * 24 * 60 * 60,
-        renter: window.localStorage.getItem("vendor"),
-      });
-      const asset = await axios.get(`${API_BASE_URL}/api/assets/${nft.id}`);
-      const vendorId = window.localStorage.getItem("vendor");
-      await axios.post(`${API_BASE_URL}/api/transaction`, {
-        assetId: asset.data._id,
-        vendorId,
-        transactionType: "Rent",
-      });
+      
       setRentPaymentModal(false);
       setRentSuccessModal(true);
     } catch (error) {

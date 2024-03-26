@@ -55,8 +55,6 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
 
 const ButtonGroup = ({ setActive, router, setIsOpen }) => {
   const {
-    signOut,
-    isSigned,
     avatar,
     setAvatar,
   } = useContext(NFTContext);
@@ -97,15 +95,6 @@ const ButtonGroup = ({ setActive, router, setIsOpen }) => {
           const formData = new FormData();
           formData.append("file", newImageFile);
           formData.append("vendorId", vendorId);
-          const response = await axios.post(
-            `${API_BASE_URL}/api/upload`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
           console.log("hit 3")
           const avatarurl = response.data.location;
           setAvatar(avatarurl);
@@ -126,28 +115,7 @@ const ButtonGroup = ({ setActive, router, setIsOpen }) => {
 
   return (
     <>
-      {!isSigned ? (
-        <>
-          <Button
-            btnName="Sign In"
-            classStyles="mx-2 rounded-xl"
-            handleClick={() => {
-              setActive("");
-              setIsOpen(false);
-              router.push("/signin");
-            }}
-          />
-          <Button
-            btnName="Sign Up"
-            classStyles="mx-2 rounded-xl"
-            handleClick={() => {
-              setActive("");
-              setIsOpen(false);
-              router.push("/signup");
-            }}
-          />
-        </>
-      ) : (
+      
         <div className="flex flex-row">
           {currentAccount ? (
             <Button
@@ -202,22 +170,11 @@ const ButtonGroup = ({ setActive, router, setIsOpen }) => {
                       </button>
                     )}
                   </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <button
-                        className="px-4 py-2 text-sm text-red-500 hover:font-semibold hover:bg-gray-100 w-full"
-                        onClick={signOut}
-                      >
-                        Sign Out
-                      </button>
-                    )}
-                  </Menu.Item>
                 </div>
               </Menu.Items>
             </Transition>
           </Menu>
         </div>
-      )}
       <Modal
         title="Choose Image"
         open={modalIsOpen}

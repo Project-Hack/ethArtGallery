@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useContext } from "react";
 import axios from "axios";
 import { useTheme } from "next-themes";
+import { FleekSdk, ApplicationAccessTokenService } from "@fleekxyz/sdk";
 
 import { NFTContext } from "../context/NFTContext";
 import { Button, Modal, Loader } from "../components";
@@ -17,10 +18,12 @@ const Game = () => {
   const [isWETH, setIsWETH] = useState(false);
   const [price, setPrice] = useState("0");
   const [rentPrice, setRentPrice] = useState("0");
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
+
+  const applicationService = new ApplicationAccessTokenService({
+    clientId: "client_ZEnd88ENgxi8Qt7PS9wa",
+  });
+
+  const fleekSdk = new FleekSdk({ accessTokenService: applicationService });
 
   const handleOpenModal = (asset) => {
     setCurrentAsset(asset);
@@ -34,45 +37,26 @@ const Game = () => {
   const handleMint = async (e) => {
     e.preventDefault();
     if (currentAsset) {
-      let response;
       try {
-        response = await axios.post(
-          `${API_BASE_URL}/api/mint-asset`,
-          currentAsset
-        );
-      } catch (error) {
-        console.error("Error:", error);
-      }
-      const uri = response.data.ipfsResult.IpfsHash;
-      await createSale(uri, isWETH, price, rentPrice, isForSale, isForRent);
-      handleCloseModal();
-      const ownerId = window.localStorage.getItem("vendor");
-      const { id } = currentAsset;
-      try {
-        const assets = await axios.post(`${API_BASE_URL}/api/assets/`, {
-          id,
-          uri,
-          isForSale,
-          isForRent,
-          isWETH,
-          price,
-          rentPrice,
-          owner: ownerId,
+        const metadataBuffer = Buffer.from(JSON.stringify(currentAsset));
+        console.log(metadataBuffer);
+        const uploadResult = await fleekSdk.ipfs().add({
+          path: `${currentAsset.id}.json`,
+          content: metadataBuffer,
         });
-        const assetId = assets.data.id;
-        const vendorId = window.localStorage.getItem("vendor");
-        await axios.post(`${API_BASE_URL}/api/transaction`, {
-          assetId,
-          vendorId,
-          transactionType: "Create",
-        });
+        console.log("hit 3")
+        // Get the CID from the upload result
+        const uri = uploadResult.cid.toString();
+        await createSale(uri, isWETH, price, rentPrice, isForSale, isForRent);
+
+        handleCloseModal();
+        setMintedAssets((prev) => ({ ...prev, [currentAsset.id]: true }));
+        setPrice("0");
+        setRentPrice("0");
+        setCurrentAsset(null);
       } catch (error) {
-        console.error("Error in storing asset in backend", error);
+        console.error("Error uploading metadata to IPFS:", error);
       }
-      setMintedAssets((prev) => ({ ...prev, [currentAsset.id]: true }));
-      setPrice("0");
-      setRentPrice("0");
-      setCurrentAsset(null);
     }
   };
 

@@ -15,19 +15,10 @@ const fetchContract = (signerORProvider) =>
   new ethers.Contract(MarketAddress, MarketAddressABI, signerORProvider);
 
 export const NFTProvider = ({ children }) => {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
   // const [currentAccount, setCurrentAccount] = useState("");
   const [avatar, setAvatar] = useState("");
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
   // const nftCurrency = "MATIC";
-
-  const [isSigned, setIsSigned] = useState(false);
-  const [isSingedUp, setIsSingedUp] = useState(false);
-  const [wrongOTP, setWrongOTP] = useState(false);
-
   const disconnect = useDisconnect();
   const address = useAddress();
   const connectionStatus = useConnectionStatus();
@@ -38,7 +29,6 @@ export const NFTProvider = ({ children }) => {
       let parsedData = JSON.parse(userdata);
       let avatarurl = parsedData.avatarurl;
       setAvatar(avatarurl);
-      setIsSigned(true);
     }
   }, []);
 
@@ -49,171 +39,6 @@ export const NFTProvider = ({ children }) => {
     else
       return "MATIC";
   }
-
-  const signIn = async (email, password) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/api/vendor/signin`, {
-        email,
-        password,
-      });
-  
-      if (response.status === 200) {
-        const token = response.data.token;
-        if (token) {
-          window.localStorage.setItem("userdata", JSON.stringify(response.data))
-          window.localStorage.setItem("vendor", response.data.vendorId);
-          setIsSigned(true);
-          // window.location.href = "/";
-        } else {
-          throw new Error("Authentication failed");
-        }
-      } else {
-        throw new Error("Authentication failed");
-      }
-    } catch (error) {
-      console.error("Error during sign-in:", error);
-      throw error; // This will reject the promise returned by signIn
-    }
-  };
-  
-  const signUp = async (email, password) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/api/vendor/signup`, {
-        email,
-        password
-      });
-      if (response.status) {
-        setIsSingedUp(true);
-      } else {
-        console.log("Authentication failed");
-      }
-    } catch (error) {
-      console.error("Error during sign-up:", error);
-    }
-  };
-
-  const verify = async (email, otp) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/api/vendor/verify`, {
-        email,
-        otp,
-      });
-      console.log(response)
-      window.localStorage.setItem("vendor", response.data.vendorId);
-
-      if (response.status === 200) {
-        const token = window.localStorage.setItem("userdata", JSON.stringify(response.data));
-        if (token) {
-          setIsSigned(true);
-        }
-        setWrongOTP(false);
-        window.location.href = "/";
-      } else {
-        setWrongOTP(true);
-        console.log("Authentication failed");
-      }
-    } catch (error) {
-      setWrongOTP(true);
-      console.error("Error during sign-in:", error);
-    }
-  };
-
-  const signOut = async () => {
-    window.localStorage.clear();
-    setIsSigned(false);
-    setIsSingedUp(false);
-    // setCurrentAccount("");
-    disconnect();
-    window.location.href = "/";
-  };
-
-  // const checkIfWalletIsConnected = async () => {
-  //   if (!window.ethereum) return alert("Please install Metamask wallet");
-  //   if(window.localStorage.getItem("vendor") === null) return;
-  //   const accounts = await window.ethereum.request({ method: "eth_accounts" });
-  //   if (accounts.length) {
-  //     setCurrentAccount(accounts[0]);
-  //     // try {
-  //     //   let vendorId = window.localStorage.getItem("vendor");
-  //     //   await axios.post(`${API_BASE_URL}/api/address/`, {
-  //     //     vendorId,
-  //     //     address: accounts[0]
-  //     //   })
-  //     // }
-  //     // catch (error) {
-  //     //   console.error("Not signed In:", error);
-  //     // }
-  //   }
-  //   if (process.env.NEXT_PUBLIC_TESTNET === "true") {
-  //     await switchToPolygonMumbaiTestnet();
-  //   } else {
-  //     console.log("No accounts found");
-  //   }
-  // };
-
-  // const connectWallet = async () => {
-  //   if (!window.ethereum) return alert("Please install Metamask wallet");
-  //   if(window.localStorage.getItem("vendor") === null) return;
-  //   const accounts = await window.ethereum.request({
-  //     method: "eth_requestAccounts",
-  //   });
-  //   setCurrentAccount(accounts[0]);
-  //   try {
-  //     let vendorId = window.localStorage.getItem("vendor");
-  //     await axios.post(`${API_BASE_URL}/api/address/`, {
-  //       vendorId,
-  //       address: accounts[0]
-  //     })
-  //   }
-  //   catch (error) {
-  //     console.error("Not signed In:", error);
-  //   }
-  //   if (process.env.NEXT_PUBLIC_TESTNET === "true") {
-  //     await switchToPolygonMumbaiTestnet();
-  //   }
-  //   window.location.reload();
-  // };
-
-  // const switchToPolygonMumbaiTestnet = async () => {
-  //   const chainId = '0x13881'; // Polygon Mumbai Testnet
-  //   const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-
-  //   if (currentChainId !== chainId) {
-  //     try {
-  //       await window.ethereum.request({
-  //         method: 'wallet_switchEthereumChain',
-  //         params: [{ chainId: chainId }]
-  //       });
-  //     } catch (err) {
-  //       if (err.code === 4902) {
-  //         try {
-  //           await window.ethereum.request({
-  //             method: 'wallet_addEthereumChain',
-  //             params: [
-  //               {
-  //                 chainId: chainId,
-  //                 chainName: 'Matic(Polygon) Mumbai Testnet',
-  //                 nativeCurrency: {
-  //                   name: 'MATIC',
-  //                   symbol: 'MATIC',
-  //                   decimals: 18
-  //                 },
-  //                 rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-  //                 blockExplorerUrls: ['https://mumbai.polygonscan.com/']
-  //               }
-  //             ]
-  //           });
-  //         } catch (addError) {
-  //           console.error('Error adding the Polygon Mumbai testnet:', addError);
-  //         }
-  //       } else {
-  //         console.error('Error switching to the Polygon Mumbai testnet:', err);
-  //       }
-  //     }
-  //   } else {
-  //     console.log('Already connected to the Polygon Mumbai testnet.');
-  //   }
-  // };
 
   const userOf = async (id) => {
     const web3Modal = new Web3Modal();
@@ -632,14 +457,7 @@ export const NFTProvider = ({ children }) => {
         fetchMyRentedNFT,
         userOf,
         reSale,
-        signIn,
-        signUp,
-        isSigned,
-        signOut,
         isLoadingNFT,
-        verify,
-        isSingedUp,
-        wrongOTP,
         avatar, 
         setAvatar
       }}

@@ -36,21 +36,7 @@ const ResellNFT = () => {
 
   const resell = async () => {
     await reSale(tokenId, isWETH, price, rentPrice, isForRent, isForSale);
-    await axios.put(`${API_BASE_URL}/api/assets/${id}`, {
-      sold: false,
-      isForSale,
-      isForRent,
-      isWETH,
-      price,
-      rentPrice,
-    });
-    const asset = await axios.get(`${API_BASE_URL}/api/assets/${id}`);
-    const vendorId = window.localStorage.getItem("vendor");
-    await axios.post(`${API_BASE_URL}/api/transaction`, {
-      assetId: asset.data._id,
-      vendorId,
-      transactionType: "Resell",
-    });
+    
     router.push("/");
     setBuySuccessModal(true);
   };

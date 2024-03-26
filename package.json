@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fleekxyz/cli": "^0.7.3",
+    "@fleekxyz/sdk": "^0.7.3",
     "@headlessui/react": "^1.7.18",
     "@thirdweb-dev/react": "^4.4.9",
     "@thirdweb-dev/sdk": "^4.0.36",
