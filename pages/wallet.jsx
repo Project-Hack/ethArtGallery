@@ -11,10 +11,6 @@ import {} from "@thirdweb-dev/react";
 import axios from "axios"; // Ensure you've installed axios
 
 const Wallet = () => {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
 
   const address = useConnectionStatus() === "connected" ? useAddress().toLowerCase() : null;
 

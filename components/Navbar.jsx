@@ -64,10 +64,6 @@ const ButtonGroup = ({ setActive, router, setIsOpen }) => {
   const editorRef = useRef(null);
   const currentAccount = useAddress();
 
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
   const handleScaleChange = (e) => {
     setScale(parseFloat(e.target.value));
   };

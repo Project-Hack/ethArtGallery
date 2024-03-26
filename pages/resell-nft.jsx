@@ -5,10 +5,7 @@ import { NFTContext } from "../context/NFTContext";
 import { Loader, Button, Input, Modal } from "../components";
 
 const ResellNFT = () => {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
+
   const { reSale, isLoadingNFT } = useContext(NFTContext);
   const router = useRouter();
   const { tokenId, tokenURI } = router.query;

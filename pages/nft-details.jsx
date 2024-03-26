@@ -108,10 +108,6 @@ const RentBobyCmp = ({ nft, nftCurrency, rentalPeriod, setRentalPeriod }) => (
 );
 
 const NFTDetails = () => {
-  const API_BASE_URL =
-    process.env.NEXT_PUBLIC_PRODUCTION === "true"
-      ? process.env.NEXT_PUBLIC_BASE_URL
-      : "http://localhost:5000";
   const { isLoadingNFT, buyNft, rentNFT, userOf } =
     useContext(NFTContext);
   const [currency, setCurrency] = useState("MATIC");
