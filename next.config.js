@@ -1,8 +1,8 @@
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
-  distDir: 'out',
-}
-
-module.exports = nextConfig
+module.exports = {
+  images: {
+    loader: 'akamai',
+    path: '',
+  },
+  output: 'export',
+  distDir: 'build',
+};

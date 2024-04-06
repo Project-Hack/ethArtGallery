@@ -216,9 +216,9 @@ export const NFTProvider = ({ children }) => {
       "ether"
     );
 
-    // const expiry = Math.floor(Date.now() / 1000) + rentalPeriodInDays * 24 * 60 * 60;
+    const expiry = Math.floor(Date.now() / 1000) + rentalPeriodInDays * 60;
     //for 2 minute
-    const expiry = Math.floor(Date.now() / 1000) + 120;
+    // const expiry = Math.floor(Date.now() / 1000) + 120;
     let transaction;
 
     if (nft.isWETH === 'true' || nft.isWETH === true) {

@@ -220,7 +220,7 @@ const ResellNFT = () => {
                   <Input
                     inputType="number"
                     title="Rent Price"
-                    placeholder="Rent Price per day"
+                    placeholder="Rent Price per minute"
                     handleClick={(e) => setRentPrice(e.target.value)}
                     classStyles="mt-2"
                   />

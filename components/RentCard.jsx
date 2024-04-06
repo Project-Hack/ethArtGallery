@@ -62,7 +62,7 @@ const RentCard = ({ nft, onProfilePage }) => {
                 <span className="countdown font-mono text-4xl">
                   <span style={{ "--value": `${days}` }}>{days}</span>
                 </span>
-                days
+                minute
               </div>
               <div className="flex flex-col">
                 <span className="countdown font-mono text-4xl">
@@ -95,7 +95,7 @@ const RentCard = ({ nft, onProfilePage }) => {
                     </span>
                     <span className="text-base font-medium text-white">
                       {" "}
-                      {nftCurrency(nft)} /day{" "}
+                      {nftCurrency(nft)} /minute{" "}
                     </span>
                   </p>
                 </div>

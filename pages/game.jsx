@@ -368,7 +368,7 @@ const Game = () => {
                                   isForRent ? "" : "hidden"
                                 }`}
                               >
-                                Rent Price per day
+                                Rent Price per minute
                               </label>
                               <input
                                 type="number"

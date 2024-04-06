@@ -65,19 +65,19 @@ const RentBobyCmp = ({ nft, nftCurrency, rentalPeriod, setRentalPeriod }) => (
             htmlFor="rentalDays"
             className="font-poppins dark:text-white text-nft-black-1 text-base font-semibold mr-10 "
           >
-            Rental Period (Days):
+            Rental Period (minute):
           </label>
         </div>
       </div>
 
       <div>
         <div className="pt-5 ml-20 pl-20">
-          {nft.rentPrice} {nftCurrency} {"/ day"}
+          {nft.rentPrice} {nftCurrency} {"/ minute"}
         </div>
         <div className="mt-8 px-10 pr-10">
           <input
             min="1"
-            placeholder="Enter number of days"
+            placeholder="Enter number of minute"
             value={rentalPeriod}
             onChange={(e) => setRentalPeriod(e.target.value)}
             type="number"
@@ -346,7 +346,7 @@ const NFTDetails = () => {
       )}
       {rentPaymentModal && (
         <Modal
-          header="Rent asset on day basis"
+          header="Rent asset on minute basis"
           body={
             <RentBobyCmp
               nft={nft}
